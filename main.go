@@ -12,23 +12,22 @@ import (
 func main() {
 	fmt.Println("Setting up the blog database...")
 	
-	// Setup the database
+	// setup
 	db, err := database.SetupDB()
 	if err != nil {
 		log.Fatalf("Failed to setup database: %v", err)
 	}
 	defer db.Close()
 	
-	// Create repositories
 	adminRepo := repositories.NewSQLiteAdminRepository(db)
 	postRepo := repositories.NewSQLitePostRepository(db)
 	commentRepo := repositories.NewSQLiteCommentRepository(db)
 	imageRepo := repositories.NewSQLiteImageRepository(db)
 	
-	// Create an admin
+	// make admin
 	admin := &models.Admin{
 		Username:     "admin",
-		PasswordHash: "hashed_password", // In a real app, this would be properly hashed
+		PasswordHash: "hashed_password", // In real app, this would be properly hashed
 		DisplayName:  "Site Admin",
 	}
 	
@@ -37,10 +36,10 @@ func main() {
 	}
 	fmt.Printf("Created admin with ID: %d\n", admin.ID)
 	
-	// Create a post
+	// make mock post
 	post := &models.Post{
 		Title:   "My First Blog Post",
-		Content: "This is the content of my first blog post. Welcome to my blog!",
+		Content: "Hello databases class. This is my first blog post. I hope you all enjoy my presentation!",
 	}
 	
 	if err := postRepo.Create(post); err != nil {
@@ -48,11 +47,11 @@ func main() {
 	}
 	fmt.Printf("Created post with ID: %d\n", post.ID)
 	
-	// Add a comment to the post
+	// add comment to post
 	comment := &models.Comment{
 		PostID:        post.ID,
 		CommenterName: "John Doe",
-		Content:       "Great first post! Looking forward to more.",
+		Content:       "Awesome blog bro. Keep up the cool posts",
 	}
 	
 	if err := commentRepo.Create(comment); err != nil {
@@ -60,7 +59,7 @@ func main() {
 	}
 	fmt.Printf("Created comment with ID: %d\n", comment.ID)
 	
-	// Add an image to the post
+	// add image to post
 	image := &models.Image{
 		PostID:   post.ID,
 		Filename: "example.jpg",
@@ -72,7 +71,7 @@ func main() {
 	}
 	fmt.Printf("Created image with ID: %d\n", image.ID)
 	
-	// Retrieve post with comments
+	// get post with comments
 	comments, err := commentRepo.GetByPostID(post.ID)
 	if err != nil {
 		log.Fatalf("Failed to retrieve comments: %v", err)
@@ -86,7 +85,7 @@ func main() {
 		fmt.Printf("- %s: %s\n", c.CommenterName, c.Content)
 	}
 	
-	// Retrieve images for the post
+	// get images for post
 	images, err := imageRepo.GetByPostID(post.ID)
 	if err != nil {
 		log.Fatalf("Failed to retrieve images: %v", err)
